@@ -1,0 +1,169 @@
+﻿<#@ template language="C#" linePragmas="false" #>
+<#@ parameter name="ShaderName" type="System.String" #>
+<#@ parameter name="ShaderPathInternal" type="System.String" #>
+<#@ parameter name="Properties" type="PropertyInfo[]" #>
+// Auto Generated code from ShaderControllerGenerator
+using UnityEngine;
+
+[RequireComponent(typeof(Camera))]
+[ExecuteInEditMode]
+public class <#= ShaderName #>Controller : MonoBehaviour
+{
+<#
+	for (int i = 0; i < Properties.Length; i++)
+	{
+		if (Properties[i].isDecorator)
+		{
+#>
+	<#= Properties[i].attribute #>
+<#
+		}
+		else
+		{
+			switch (Properties[i].shaderType)
+			{
+				case UnityEngine.Rendering.ShaderPropertyType.Float:
+#>
+	[Tooltip("<#= Properties[i].description #>")]
+	[SerializeField] private float <#= Properties[i].descriptionAsName #> = <#= Properties[i].values[0] #>f;
+
+<#					break;
+				case UnityEngine.Rendering.ShaderPropertyType.Color:
+#>
+	[Tooltip("<#= Properties[i].description #>")]
+<#				if (string.IsNullOrEmpty(Properties[i].attribute) == false)
+				{
+#>
+	<#= Properties[i].attribute #>
+<#
+				}
+#>
+	[SerializeField] private Color <#= Properties[i].descriptionAsName #> = new Color(<#= Properties[i].values[0] #>f, <#= Properties[i].values[1] #>f, <#= Properties[i].values[2] #>f, <#= Properties[i].values[3] #>f);
+
+<#
+					break;
+				case UnityEngine.Rendering.ShaderPropertyType.Vector:
+#>
+	[Tooltip("<#= Properties[i].description #>")]
+	[SerializeField] private Vector4  <#= Properties[i].descriptionAsName #> = new Vector4(<#= Properties[i].values[0] #>f, <#= Properties[i].values[1] #>f, <#= Properties[i].values[2] #>f, <#= Properties[i].values[3] #>f);
+
+<#
+				break;
+			case UnityEngine.Rendering.ShaderPropertyType.Range:
+#>
+	[Tooltip("<#= Properties[i].description #>")]
+	[Range(<#= Properties[i].values[1] #>f, <#= Properties[i].values[2] #>f)]
+<#
+			if (Properties[i].values[3] == 0.0f)
+			{
+#>
+	[SerializeField] private float <#= Properties[i].descriptionAsName #> = <#= Properties[i].values[0] #>f;
+	
+<#
+			}
+			else
+			{
+#>
+	[SerializeField] private int <#= Properties[i].descriptionAsName #> = <#= Properties[i].values[0] #>;
+
+<#
+			}
+				break;
+			default:
+				break;
+			}
+		}
+	}
+#>
+
+	private Material material;
+	private Shader shader;
+
+	protected void Start()
+	{
+		shader = Shader.Find("<#= ShaderPathInternal #>");
+
+        material = new Material(shader);
+        material.hideFlags = HideFlags.DontSave;
+	}
+
+	public void SetupInspectorValue()
+	{
+<#
+	for (int i = 0; i < Properties.Length; i++)
+	{
+		if (Properties[i].isDecorator == false)
+		{
+			switch (Properties[i].shaderType)
+			{
+				case UnityEngine.Rendering.ShaderPropertyType.Float:
+#>
+		<#= Properties[i].descriptionAsName #> = material.GetFloat("<#= Properties[i].name #>");
+<#	
+					break;
+				case UnityEngine.Rendering.ShaderPropertyType.Range:
+					if (Properties[i].values[3] == 0.0f)
+					{
+#>
+		<#= Properties[i].descriptionAsName #> = material.GetFloat("<#= Properties[i].name #>");
+<#		
+					}
+					else
+					{
+#>
+		<#= Properties[i].descriptionAsName #> = material.GetInt("<#= Properties[i].name #>");
+<#
+					}
+					break;
+				case UnityEngine.Rendering.ShaderPropertyType.Color:
+#>
+		<#= Properties[i].descriptionAsName #> = material.GetColor("<#= Properties[i].name #>");
+<#
+					break;
+				case UnityEngine.Rendering.ShaderPropertyType.Vector:
+#>
+		<#= Properties[i].descriptionAsName #> = material.GetVector("<#= Properties[i].name #>");
+<#
+				break;
+			default:
+				break;
+			}
+		}
+	}
+#>
+	}
+
+	private void OnRenderImage(RenderTexture source, RenderTexture destination)
+	{
+<#
+	for (int i = 0; i < Properties.Length; i++)
+	{
+		if (Properties[i].isDecorator == false)
+		{
+			switch (Properties[i].shaderType)
+			{
+				case UnityEngine.Rendering.ShaderPropertyType.Float:
+				case UnityEngine.Rendering.ShaderPropertyType.Range:
+#>
+		material.SetFloat("<#= Properties[i].name #>", <#= Properties[i].descriptionAsName #>);
+<#					break;
+				case UnityEngine.Rendering.ShaderPropertyType.Color:
+#>
+		material.SetColor("<#= Properties[i].name #>", <#= Properties[i].descriptionAsName #>);
+<#
+					break;
+				case UnityEngine.Rendering.ShaderPropertyType.Vector:
+#>
+		material.SetVector("<#= Properties[i].name #>", <#= Properties[i].descriptionAsName #>);
+<#
+				break;
+			default:
+				break;
+			}
+		}
+	}
+#>
+
+		Graphics.Blit(source, destination, material);
+	}
+}

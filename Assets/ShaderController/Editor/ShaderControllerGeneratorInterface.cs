@@ -18,109 +18,8 @@ public class PropertyInfo
 	public bool isDecorator = false;
 }
 
-public partial class ShaderControllerGeneratorInterface : ShaderControllerGenerator
+public sealed class ShaderControllerGeneratorInterface
 {
-	public static void OLD_GenerateShaderController()
-	{
-		Object selected = Selection.activeObject;
-
-		Shader shader = selected as Shader;
-		if (shader == null)
-		{
-			// LOG_WARNING USE ON SHADER ONLY
-			return;
-		}
-
-		string shaderName = shader.name.Split('/').Last();
-
-		Debug.Log("Shader Name: " + shaderName);
-
-		string outputPath = EditorUtility.SaveFilePanelInProject("Save Location", shaderName + "Controller", "cs", "Where do you want to save the script");
-
-		ShaderControllerGenerator generator = new ShaderControllerGenerator();
-
-		generator.Session = new Dictionary<string, object>();
-
-		generator.Session["ShaderName"] = shaderName;
-		generator.Session["ShaderPathInternal"] = shader.name;
-
-		int propertyCount = ShaderUtil.GetPropertyCount(shader);
-
-
-		List<string> colorPropertyNames = new List<string>();
-		List<string> colorPropertyDescripions = new List<string>();
-
-		List<float> floatPropertyValues = new List<float>();
-		List<string> floatPropertyNames = new List<string>();
-		List<string> floatPropertyDescriptions = new List<string>();
-
-		List<List<float>> vectorPropertyValues = new List<List<float>>();
-		List<string> vectorPropertyNames = new List<string>();
-		List<string> vectorPropertyDescriptions = new List<string>();
-
-		string propertyName = "";
-		string propertyDescription = "";
-
-		for (int i = 0; i < propertyCount; i++)
-		{
-			if ((shader.GetPropertyFlags(i) & ShaderPropertyFlags.HideInInspector) == ShaderPropertyFlags.HideInInspector)
-				continue;
-
-			propertyName = shader.GetPropertyName(i);
-			propertyDescription = shader.GetPropertyDescription(i);
-
-			//string[] ss = shader.GetPropertyAttributes(i);
-			//for (int j = 0; j < ss.Length; j++)
-			//{
-			//	Debug.Log(shader.GetPropertyType(i) + " " + propertyName + " " + ss[j]);
-			//	Debug.Log(shader.GetPropertyDescription(i) + " " + propertyName + " " + ss[j]);
-			//}
-
-			switch (shader.GetPropertyType(i))
-			{
-				case ShaderPropertyType.Color:
-					colorPropertyNames.Add(propertyName);
-					colorPropertyDescripions.Add(propertyDescription);
-					break;
-				case ShaderPropertyType.Vector:
-					vectorPropertyNames.Add(propertyName);
-					vectorPropertyDescriptions.Add(propertyDescription);
-
-					Vector4 value = shader.GetPropertyDefaultVectorValue(i);
-					vectorPropertyValues.Add(new List<float>() { value.x, value.y, value.z, value.w });
-					break;
-				case ShaderPropertyType.Float:
-					floatPropertyNames.Add(propertyName);
-					floatPropertyDescriptions.Add(propertyDescription);
-					floatPropertyValues.Add(shader.GetPropertyDefaultFloatValue(i));
-					break;
-				case ShaderPropertyType.Range:
-					break;
-				default:
-					break;
-			}
-		}
-
-
-
-		generator.Session["FloatPropertyNames"] = floatPropertyNames.ToArray();
-		generator.Session["FloatPropertyDescriptions"] = floatPropertyDescriptions.ToArray();
-		generator.Session["FloatPropertyValues"] = floatPropertyValues.ToArray();
-		generator.Session["ColorPropertyNames"] = colorPropertyNames.ToArray();
-		generator.Session["ColorPropertyDescriptions"] = colorPropertyDescripions.ToArray();
-		generator.Session["VectorPropertyNames"] = vectorPropertyNames.ToArray();
-		generator.Session["VectorPropertyDescriptions"] = vectorPropertyDescriptions.ToArray();
-		generator.Session["VectorPropertyValues"] = vectorPropertyValues.Select(a => a.ToArray()).ToArray();
-
-		generator.Initialize();
-
-		string classDefinition = generator.TransformText();
-
-		File.WriteAllText(outputPath, classDefinition);
-
-		AssetDatabase.Refresh();
-	}
-
 	[MenuItem("Assets/Create Shader Controller")]
 	public static void CreateShaderControllerFromShaderAsset()
 	{
@@ -145,6 +44,30 @@ public partial class ShaderControllerGeneratorInterface : ShaderControllerGenera
 		GenerateShaderController(shader, outputPath);
 	}
 
+	[MenuItem("Assets/Create PostProcess Controller")]
+	public static void CreatePostProcessControllerFromShaderAsset()
+	{
+		Object selected = Selection.activeObject;
+
+		Shader shader = selected as Shader;
+		if (shader == null)
+		{
+			// LOG_WARNING USE ON SHADER ONLY
+			return;
+		}
+
+		string shaderName = shader.name.Split('/').Last();
+
+		string outputPath = EditorUtility.SaveFilePanelInProject("Save Location", shaderName + "Controller", "cs", "Where do you want to save the script");
+
+		if (string.IsNullOrEmpty(outputPath))
+		{
+			return;
+		}
+
+		GeneratePostProcessController(shader, outputPath);
+	}
+
 	public static void GenerateShaderController(Shader shader, string outputPath)
 	{
 		string shaderName = shader.name.Split('/').Last();
@@ -156,6 +79,41 @@ public partial class ShaderControllerGeneratorInterface : ShaderControllerGenera
 		generator.Session["ShaderName"] = shaderName;
 		generator.Session["ShaderPathInternal"] = shader.name;
 
+		generator.Session["Properties"] = GetShaderPropertyInfos(shader);
+
+		generator.Initialize();
+
+		string classDefinition = generator.TransformText();
+
+		File.WriteAllText(outputPath, classDefinition);
+
+		AssetDatabase.Refresh();
+	}
+
+	public static void GeneratePostProcessController(Shader shader, string outputPath)
+	{
+		string shaderName = shader.name.Split('/').Last();
+
+		PostProcessControllerGenerator generator = new PostProcessControllerGenerator();
+
+		generator.Session = new Dictionary<string, object>();
+
+		generator.Session["ShaderName"] = shaderName;
+		generator.Session["ShaderPathInternal"] = shader.name;
+
+		generator.Session["Properties"] = GetShaderPropertyInfos(shader);
+
+		generator.Initialize();
+
+		string classDefinition = generator.TransformText();
+
+		File.WriteAllText(outputPath, classDefinition);
+
+		AssetDatabase.Refresh();
+	}
+
+	private static PropertyInfo[] GetShaderPropertyInfos(Shader shader)
+	{
 		int propertyCount = ShaderUtil.GetPropertyCount(shader);
 
 		List<PropertyInfo> propertyInfos = new List<PropertyInfo>();
@@ -205,7 +163,7 @@ public partial class ShaderControllerGeneratorInterface : ShaderControllerGenera
 					Vector4 color = shader.GetPropertyDefaultVectorValue(i);
 					info.values = new float[4] { color.x, color.y, color.z, color.w };
 
-					if((shader.GetPropertyFlags(i) & ShaderPropertyFlags.HDR) == ShaderPropertyFlags.HDR)
+					if ((shader.GetPropertyFlags(i) & ShaderPropertyFlags.HDR) == ShaderPropertyFlags.HDR)
 					{
 						info.attribute = "[ColorUsage(true, true)]";
 					}
@@ -228,17 +186,7 @@ public partial class ShaderControllerGeneratorInterface : ShaderControllerGenera
 			propertyInfos.Add(info);
 		}
 
-
-		generator.Session["Properties"] = propertyInfos.ToArray();
-
-
-		generator.Initialize();
-
-		string classDefinition = generator.TransformText();
-
-		File.WriteAllText(outputPath, classDefinition);
-
-		AssetDatabase.Refresh();
+		return propertyInfos.ToArray();
 	}
 
 	private static string ProcessDecorator(string attribute, int j)
