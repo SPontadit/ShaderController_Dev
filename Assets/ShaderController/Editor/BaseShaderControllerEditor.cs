@@ -36,6 +36,8 @@ public class BaseShaderControllerEditor : Editor
 			string scriptPath = UnityEditor.AssetDatabase.GetAssetPath(UnityEditor.MonoScript.FromMonoBehaviour(shaderController));
 
 			ShaderControllerGeneratorInterface.GenerateShaderController(shader, scriptPath);
+
+			// LOG: Update Shader Ctrl
 		}
 
 		EditorGUILayout.Space();

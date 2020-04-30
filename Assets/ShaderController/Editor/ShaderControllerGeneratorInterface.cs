@@ -24,48 +24,61 @@ public sealed class ShaderControllerGeneratorInterface
 	public static void CreateShaderControllerFromShaderAsset()
 	{
 		Object selected = Selection.activeObject;
-
 		Shader shader = selected as Shader;
+
 		if (shader == null)
 		{
-			// LOG_WARNING USE ON SHADER ONLY
+			// LOG USE ON SHADER ONLY
 			return;
 		}
 
-		string shaderName = shader.name.Split('/').Last();
-
-		string outputPath = EditorUtility.SaveFilePanelInProject("Save Location", shaderName + "Controller", "cs", "Where do you want to save the script");
+		string outputPath = GetOutputPath(shader);
 
 		if (string.IsNullOrEmpty(outputPath))
 		{
+			// LOG Bad Path
+
 			return;
 		}
 
 		GenerateShaderController(shader, outputPath);
+
+		// LOG Shader Generation Success
 	}
 
 	[MenuItem("Assets/Create PostProcess Controller")]
 	public static void CreatePostProcessControllerFromShaderAsset()
 	{
 		Object selected = Selection.activeObject;
-
 		Shader shader = selected as Shader;
+		
 		if (shader == null)
 		{
-			// LOG_WARNING USE ON SHADER ONLY
+			// LOG USE ON SHADER ONLY
 			return;
 		}
 
-		string shaderName = shader.name.Split('/').Last();
 
-		string outputPath = EditorUtility.SaveFilePanelInProject("Save Location", shaderName + "Controller", "cs", "Where do you want to save the script");
-
+		string outputPath = GetOutputPath(shader);
+		
 		if (string.IsNullOrEmpty(outputPath))
 		{
+			// LOG Bad Path
+
 			return;
 		}
 
 		GeneratePostProcessController(shader, outputPath);
+
+		// LOG PostProcess Generation Success
+	}
+
+	private static string GetOutputPath(Shader shader)
+	{
+		string shaderName = shader.name.Split('/').Last();
+		string shaderPath = Path.GetDirectoryName(AssetDatabase.GetAssetPath(shader));
+
+		return EditorUtility.SaveFilePanel("Save Location", shaderPath, shaderName + "Controller", "cs");
 	}
 
 	public static void GenerateShaderController(Shader shader, string outputPath)
@@ -155,7 +168,8 @@ public sealed class ShaderControllerGeneratorInterface
 			info.name = propertyName;
 			info.description = propertyDescription;
 			string descriptionAsName = Regex.Replace(propertyDescription, @"(^\w)|(\s\w)", m => m.Value.ToUpper());
-			info.descriptionAsName = descriptionAsName.Replace(" ", string.Empty);
+			descriptionAsName = descriptionAsName.Replace(" ", string.Empty);
+			info.descriptionAsName = System.Char.ToLower(descriptionAsName[0]) + descriptionAsName.Substring(1);
 			info.shaderType = shader.GetPropertyType(i);
 			switch (info.shaderType)
 			{

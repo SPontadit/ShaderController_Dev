@@ -7,7 +7,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Camera))]
 [ExecuteInEditMode]
-public class <#= ShaderName #>Controller : MonoBehaviour
+public class <#= ShaderName #>Controller : BasePostProcessController
 {
 <#
 	for (int i = 0; i < Properties.Length; i++)
@@ -76,15 +76,12 @@ public class <#= ShaderName #>Controller : MonoBehaviour
 	}
 #>
 
-	private Material material;
-	private Shader shader;
-
-	protected void Start()
+	private void Start()
 	{
 		shader = Shader.Find("<#= ShaderPathInternal #>");
 
-        material = new Material(shader);
-        material.hideFlags = HideFlags.DontSave;
+		material = new Material(shader);
+		material.hideFlags = HideFlags.DontSave;
 	}
 
 	public void SetupInspectorValue()

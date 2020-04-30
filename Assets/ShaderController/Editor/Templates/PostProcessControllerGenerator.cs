@@ -25,7 +25,7 @@ namespace Assets.ShaderController.Editor.Templates
             this.Write("// Auto Generated code from ShaderControllerGenerator\r\nusing UnityEngine;\r\n\r\n[Req" +
                     "uireComponent(typeof(Camera))]\r\n[ExecuteInEditMode]\r\npublic class ");
             this.Write(this.ToStringHelper.ToStringWithCulture(ShaderName));
-            this.Write("Controller : MonoBehaviour\r\n{\r\n");
+            this.Write("Controller : BasePostProcessController\r\n{\r\n");
 
 	for (int i = 0; i < Properties.Length; i++)
 	{
@@ -132,11 +132,10 @@ namespace Assets.ShaderController.Editor.Templates
 		}
 	}
 
-            this.Write("\r\n\tprivate Material material;\r\n\tprivate Shader shader;\r\n\r\n\tprotected void Start()" +
-                    "\r\n\t{\r\n\t\tshader = Shader.Find(\"");
+            this.Write("\r\n\tprivate void Start()\r\n\t{\r\n\t\tshader = Shader.Find(\"");
             this.Write(this.ToStringHelper.ToStringWithCulture(ShaderPathInternal));
-            this.Write("\");\r\n\r\n        material = new Material(shader);\r\n        material.hideFlags = Hid" +
-                    "eFlags.DontSave;\r\n\t}\r\n\r\n\tpublic void SetupInspectorValue()\r\n\t{\r\n");
+            this.Write("\");\r\n\r\n\t\tmaterial = new Material(shader);\r\n\t\tmaterial.hideFlags = HideFlags.DontS" +
+                    "ave;\r\n\t}\r\n\r\n\tpublic void SetupInspectorValue()\r\n\t{\r\n");
 
 	for (int i = 0; i < Properties.Length; i++)
 	{
