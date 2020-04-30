@@ -7,7 +7,7 @@
 //     le code est régénéré.
 // </auto-generated>
 // ------------------------------------------------------------------------------
-namespace Assets.Scripts.ShaderController.Editor.Templates
+namespace Assets.ShaderController.Editor.Templates
 {
     using System;
     
@@ -46,7 +46,7 @@ namespace Assets.Scripts.ShaderController.Editor.Templates
             this.Write("\t[Tooltip(\"");
             this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].description));
             this.Write("\")]\r\n\t[SerializeField] private float ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].name));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].descriptionAsName));
             this.Write(" = ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].values[0]));
             this.Write("f;\r\n\r\n");
@@ -66,7 +66,7 @@ namespace Assets.Scripts.ShaderController.Editor.Templates
 				}
 
             this.Write("\t[SerializeField] private Color ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].name));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].descriptionAsName));
             this.Write(" = new Color(");
             this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].values[0]));
             this.Write("f, ");
@@ -83,7 +83,7 @@ namespace Assets.Scripts.ShaderController.Editor.Templates
             this.Write("\t[Tooltip(\"");
             this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].description));
             this.Write("\")]\r\n\t[SerializeField] private Vector4  ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].name));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].descriptionAsName));
             this.Write(" = new Vector4(");
             this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].values[0]));
             this.Write("f, ");
@@ -109,7 +109,7 @@ namespace Assets.Scripts.ShaderController.Editor.Templates
 			{
 
             this.Write("\t[SerializeField] private float ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].name));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].descriptionAsName));
             this.Write(" = ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].values[0]));
             this.Write("f;\r\n\t\r\n");
@@ -119,7 +119,7 @@ namespace Assets.Scripts.ShaderController.Editor.Templates
 			{
 
             this.Write("\t[SerializeField] private int ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].name));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].descriptionAsName));
             this.Write(" = ");
             this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].values[0]));
             this.Write(";\r\n\r\n");
@@ -145,7 +145,7 @@ namespace Assets.Scripts.ShaderController.Editor.Templates
 				case UnityEngine.Rendering.ShaderPropertyType.Float:
 
             this.Write("\t\t");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].name));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].descriptionAsName));
             this.Write(" = material.GetFloat(\"");
             this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].name));
             this.Write("\");\r\n");
@@ -156,7 +156,7 @@ namespace Assets.Scripts.ShaderController.Editor.Templates
 					{
 
             this.Write("\t\t");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].name));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].descriptionAsName));
             this.Write(" = material.GetFloat(\"");
             this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].name));
             this.Write("\");\r\n");
@@ -166,7 +166,7 @@ namespace Assets.Scripts.ShaderController.Editor.Templates
 					{
 
             this.Write("\t\t");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].name));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].descriptionAsName));
             this.Write(" = material.GetInt(\"");
             this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].name));
             this.Write("\");\r\n");
@@ -176,7 +176,7 @@ namespace Assets.Scripts.ShaderController.Editor.Templates
 				case UnityEngine.Rendering.ShaderPropertyType.Color:
 
             this.Write("\t\t");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].name));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].descriptionAsName));
             this.Write(" = material.GetColor(\"");
             this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].name));
             this.Write("\");\r\n");
@@ -185,7 +185,7 @@ namespace Assets.Scripts.ShaderController.Editor.Templates
 				case UnityEngine.Rendering.ShaderPropertyType.Vector:
 
             this.Write("\t\t");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].name));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].descriptionAsName));
             this.Write(" = material.GetVector(\"");
             this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].name));
             this.Write("\");\r\n");
@@ -211,7 +211,7 @@ namespace Assets.Scripts.ShaderController.Editor.Templates
             this.Write("\t\tmaterial.SetFloat(\"");
             this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].name));
             this.Write("\", ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].name));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].descriptionAsName));
             this.Write(");\r\n");
 					break;
 				case UnityEngine.Rendering.ShaderPropertyType.Color:
@@ -219,7 +219,7 @@ namespace Assets.Scripts.ShaderController.Editor.Templates
             this.Write("\t\tmaterial.SetColor(\"");
             this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].name));
             this.Write("\", ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].name));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].descriptionAsName));
             this.Write(");\r\n");
 
 					break;
@@ -228,7 +228,7 @@ namespace Assets.Scripts.ShaderController.Editor.Templates
             this.Write("\t\tmaterial.SetVector(\"");
             this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].name));
             this.Write("\", ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].name));
+            this.Write(this.ToStringHelper.ToStringWithCulture(Properties[i].descriptionAsName));
             this.Write(");\r\n");
 
 				break;

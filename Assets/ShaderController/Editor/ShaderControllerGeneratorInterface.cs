@@ -1,16 +1,18 @@
-﻿using Assets.Scripts.ShaderController.Editor.Templates;
+﻿using Assets.ShaderController.Editor.Templates;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEditor;
+using System.Text.RegularExpressions;
 
 public class PropertyInfo
 {
 	public ShaderPropertyType shaderType;
 	public string name;
 	public string description;
+	public string descriptionAsName;
 	public string attribute;
 	public float[] values;
 	public bool isDecorator = false;
@@ -181,7 +183,7 @@ public partial class ShaderControllerGeneratorInterface : ShaderControllerGenera
 					isIntRange = propertyAttributes[j].Equals("IntRange");
 				}
 
-				string decorator = ProcessDecorator(propertyAttributes[j]);
+				string decorator = ProcessDecorator(propertyAttributes[j], j);
 				if (string.IsNullOrEmpty(decorator) == false)
 				{
 					PropertyInfo attributeInfo = new PropertyInfo();
@@ -194,6 +196,8 @@ public partial class ShaderControllerGeneratorInterface : ShaderControllerGenera
 			PropertyInfo info = new PropertyInfo();
 			info.name = propertyName;
 			info.description = propertyDescription;
+			string descriptionAsName = Regex.Replace(propertyDescription, @"(^\w)|(\s\w)", m => m.Value.ToUpper());
+			info.descriptionAsName = descriptionAsName.Replace(" ", string.Empty);
 			info.shaderType = shader.GetPropertyType(i);
 			switch (info.shaderType)
 			{
@@ -237,17 +241,17 @@ public partial class ShaderControllerGeneratorInterface : ShaderControllerGenera
 		AssetDatabase.Refresh();
 	}
 
-	private static string ProcessDecorator(string attribute)
+	private static string ProcessDecorator(string attribute, int j)
 	{
 		if (attribute.StartsWith("Space"))
 		{
 			string spaceValue = new string(attribute.Where(System.Char.IsDigit).ToArray());
-			return "[Space(" + spaceValue + ")]";
+			return "[Space(" + spaceValue + ", order = " + j + ")]";
 		}
 		else if (attribute.StartsWith("Header"))
 		{
 			string headerValue = attribute.Split('(', ')')[1];
-			return "[Header(\"" + headerValue + "\")]";
+			return "[Header(\"" + headerValue + "\", order = " + j + ")]";
 		}
 
 		return "";

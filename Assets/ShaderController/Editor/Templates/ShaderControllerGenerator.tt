@@ -23,7 +23,7 @@ public class <#= ShaderName #>Controller : BaseShaderController
 				case UnityEngine.Rendering.ShaderPropertyType.Float:
 #>
 	[Tooltip("<#= Properties[i].description #>")]
-	[SerializeField] private float <#= Properties[i].name #> = <#= Properties[i].values[0] #>f;
+	[SerializeField] private float <#= Properties[i].descriptionAsName #> = <#= Properties[i].values[0] #>f;
 
 <#					break;
 				case UnityEngine.Rendering.ShaderPropertyType.Color:
@@ -36,14 +36,14 @@ public class <#= ShaderName #>Controller : BaseShaderController
 <#
 				}
 #>
-	[SerializeField] private Color <#= Properties[i].name #> = new Color(<#= Properties[i].values[0] #>f, <#= Properties[i].values[1] #>f, <#= Properties[i].values[2] #>f, <#= Properties[i].values[3] #>f);
+	[SerializeField] private Color <#= Properties[i].descriptionAsName #> = new Color(<#= Properties[i].values[0] #>f, <#= Properties[i].values[1] #>f, <#= Properties[i].values[2] #>f, <#= Properties[i].values[3] #>f);
 
 <#
 					break;
 				case UnityEngine.Rendering.ShaderPropertyType.Vector:
 #>
 	[Tooltip("<#= Properties[i].description #>")]
-	[SerializeField] private Vector4  <#= Properties[i].name #> = new Vector4(<#= Properties[i].values[0] #>f, <#= Properties[i].values[1] #>f, <#= Properties[i].values[2] #>f, <#= Properties[i].values[3] #>f);
+	[SerializeField] private Vector4  <#= Properties[i].descriptionAsName #> = new Vector4(<#= Properties[i].values[0] #>f, <#= Properties[i].values[1] #>f, <#= Properties[i].values[2] #>f, <#= Properties[i].values[3] #>f);
 
 <#
 				break;
@@ -55,14 +55,14 @@ public class <#= ShaderName #>Controller : BaseShaderController
 			if (Properties[i].values[3] == 0.0f)
 			{
 #>
-	[SerializeField] private float <#= Properties[i].name #> = <#= Properties[i].values[0] #>f;
+	[SerializeField] private float <#= Properties[i].descriptionAsName #> = <#= Properties[i].values[0] #>f;
 	
 <#
 			}
 			else
 			{
 #>
-	[SerializeField] private int <#= Properties[i].name #> = <#= Properties[i].values[0] #>;
+	[SerializeField] private int <#= Properties[i].descriptionAsName #> = <#= Properties[i].values[0] #>;
 
 <#
 			}
@@ -93,31 +93,31 @@ public class <#= ShaderName #>Controller : BaseShaderController
 			{
 				case UnityEngine.Rendering.ShaderPropertyType.Float:
 #>
-		<#= Properties[i].name #> = material.GetFloat("<#= Properties[i].name #>");
+		<#= Properties[i].descriptionAsName #> = material.GetFloat("<#= Properties[i].name #>");
 <#	
 					break;
 				case UnityEngine.Rendering.ShaderPropertyType.Range:
 					if (Properties[i].values[3] == 0.0f)
 					{
 #>
-		<#= Properties[i].name #> = material.GetFloat("<#= Properties[i].name #>");
+		<#= Properties[i].descriptionAsName #> = material.GetFloat("<#= Properties[i].name #>");
 <#		
 					}
 					else
 					{
 #>
-		<#= Properties[i].name #> = material.GetInt("<#= Properties[i].name #>");
+		<#= Properties[i].descriptionAsName #> = material.GetInt("<#= Properties[i].name #>");
 <#
 					}
 					break;
 				case UnityEngine.Rendering.ShaderPropertyType.Color:
 #>
-		<#= Properties[i].name #> = material.GetColor("<#= Properties[i].name #>");
+		<#= Properties[i].descriptionAsName #> = material.GetColor("<#= Properties[i].name #>");
 <#
 					break;
 				case UnityEngine.Rendering.ShaderPropertyType.Vector:
 #>
-		<#= Properties[i].name #> = material.GetVector("<#= Properties[i].name #>");
+		<#= Properties[i].descriptionAsName #> = material.GetVector("<#= Properties[i].name #>");
 <#
 				break;
 			default:
@@ -140,16 +140,16 @@ public class <#= ShaderName #>Controller : BaseShaderController
 				case UnityEngine.Rendering.ShaderPropertyType.Float:
 				case UnityEngine.Rendering.ShaderPropertyType.Range:
 #>
-		material.SetFloat("<#= Properties[i].name #>", <#= Properties[i].name #>);
+		material.SetFloat("<#= Properties[i].name #>", <#= Properties[i].descriptionAsName #>);
 <#					break;
 				case UnityEngine.Rendering.ShaderPropertyType.Color:
 #>
-		material.SetColor("<#= Properties[i].name #>", <#= Properties[i].name #>);
+		material.SetColor("<#= Properties[i].name #>", <#= Properties[i].descriptionAsName #>);
 <#
 					break;
 				case UnityEngine.Rendering.ShaderPropertyType.Vector:
 #>
-		material.SetVector("<#= Properties[i].name #>", <#= Properties[i].name #>);
+		material.SetVector("<#= Properties[i].name #>", <#= Properties[i].descriptionAsName #>);
 <#
 				break;
 			default:
