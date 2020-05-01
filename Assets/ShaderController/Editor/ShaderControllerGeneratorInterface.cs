@@ -20,17 +20,19 @@ public class PropertyInfo
 
 public sealed class ShaderControllerGeneratorInterface
 {
-	[MenuItem("Assets/Create Shader Controller")]
+	// 81 place "Shader Controller" meunn between "C# Script" and "Shader"
+	const int menuPriority = 81;
+
+	[MenuItem("Assets/Create/Shader Controller/Create Shader Controller", true)]
+	public static bool ValidateCreateShaderControllerFromShaderAsset()
+	{
+		return (Selection.activeObject as Shader) != null;
+	}
+
+	[MenuItem("Assets/Create/Shader Controller/Create Shader Controller", false, menuPriority)]
 	public static void CreateShaderControllerFromShaderAsset()
 	{
-		Object selected = Selection.activeObject;
-		Shader shader = selected as Shader;
-
-		if (shader == null)
-		{
-			// LOG USE ON SHADER ONLY
-			return;
-		}
+		Shader shader = Selection.activeObject as Shader;
 
 		string outputPath = GetOutputPath(shader);
 
@@ -46,19 +48,18 @@ public sealed class ShaderControllerGeneratorInterface
 		// LOG Shader Generation Success
 	}
 
-	[MenuItem("Assets/Create PostProcess Controller")]
+	[MenuItem("Assets/Create/Shader Controller/Create PostProcess Controller", true)]
+	public static bool ValidateCreatePostProcessControllerFromShaderAsset()
+	{
+		return (Selection.activeObject as Shader) != null;
+	}
+
+	[MenuItem("Assets/Create/Shader Controller/Create PostProcess Controller", false, menuPriority)]
 	public static void CreatePostProcessControllerFromShaderAsset()
 	{
 		Object selected = Selection.activeObject;
 		Shader shader = selected as Shader;
 		
-		if (shader == null)
-		{
-			// LOG USE ON SHADER ONLY
-			return;
-		}
-
-
 		string outputPath = GetOutputPath(shader);
 		
 		if (string.IsNullOrEmpty(outputPath))
