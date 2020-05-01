@@ -14,6 +14,10 @@ public abstract class BaseShaderController : MonoBehaviour
 	[Tooltip("When enabled, create a new material based on the one in the material field. Don't do anything if it's use with default material")]
 	[SerializeField] protected bool useMaterialCopy;
 
+	[HideInInspector]
+	[SerializeField] protected bool overrideMaterial;
+
+
 	protected virtual void Start()
 	{
 		SetupMaterial();

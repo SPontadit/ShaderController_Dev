@@ -24,8 +24,8 @@ namespace Assets.ShaderController.Editor.Templates
         {
             this.Write("// Auto Generated code from ShaderControllerGenerator\r\nusing UnityEngine;\r\n\r\n[Req" +
                     "uireComponent(typeof(Camera))]\r\n[ExecuteInEditMode]\r\npublic class ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(ShaderName));
-            this.Write("Controller : BasePostProcessController\r\n{\r\n");
+            this.Write(this.ToStringHelper.ToStringWithCulture(ControllerClassName));
+            this.Write(" : BasePostProcessController\r\n{\r\n");
 
 	for (int i = 0; i < Properties.Length; i++)
 	{
@@ -244,16 +244,16 @@ namespace Assets.ShaderController.Editor.Templates
             return this.GenerationEnvironment.ToString();
         }
 
-private string _ShaderNameField;
+private string _ControllerClassNameField;
 
 /// <summary>
-/// Access the ShaderName parameter of the template.
+/// Access the ControllerClassName parameter of the template.
 /// </summary>
-private string ShaderName
+private string ControllerClassName
 {
     get
     {
-        return this._ShaderNameField;
+        return this._ControllerClassNameField;
     }
 }
 
@@ -291,18 +291,18 @@ public virtual void Initialize()
 {
     if ((this.Errors.HasErrors == false))
     {
-bool ShaderNameValueAcquired = false;
-if (this.Session.ContainsKey("ShaderName"))
+bool ControllerClassNameValueAcquired = false;
+if (this.Session.ContainsKey("ControllerClassName"))
 {
-    this._ShaderNameField = ((string)(this.Session["ShaderName"]));
-    ShaderNameValueAcquired = true;
+    this._ControllerClassNameField = ((string)(this.Session["ControllerClassName"]));
+    ControllerClassNameValueAcquired = true;
 }
-if ((ShaderNameValueAcquired == false))
+if ((ControllerClassNameValueAcquired == false))
 {
-    object data = global::System.Runtime.Remoting.Messaging.CallContext.LogicalGetData("ShaderName");
+    object data = global::System.Runtime.Remoting.Messaging.CallContext.LogicalGetData("ControllerClassName");
     if ((data != null))
     {
-        this._ShaderNameField = ((string)(data));
+        this._ControllerClassNameField = ((string)(data));
     }
 }
 bool ShaderPathInternalValueAcquired = false;

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using System.IO;
 
 [CustomEditor(typeof(BasePostProcessController), true)]
 [CanEditMultipleObjects]
@@ -35,7 +36,7 @@ public class BasePostProcessControllerEditor : Editor
 
 			ShaderControllerGeneratorInterface.GeneratePostProcessController(shader, scriptPath);
 
-			// LOG: Update Postprocess Ctrl
+			Debug.Log($"[Shader Controller] {Path.GetFileName(scriptPath)} updated");
 		}
 
 		EditorGUILayout.Space();

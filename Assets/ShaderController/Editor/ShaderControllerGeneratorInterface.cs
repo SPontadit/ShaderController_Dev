@@ -20,7 +20,7 @@ public class PropertyInfo
 
 public sealed class ShaderControllerGeneratorInterface
 {
-	// 81 place "Shader Controller" meunn between "C# Script" and "Shader"
+	// 81 as priority for placing "Shader Controller" menu between "C# Script" and "Shader"
 	const int menuPriority = 81;
 
 	[MenuItem("Assets/Create/Shader Controller/Create Shader Controller", true)]
@@ -37,15 +37,11 @@ public sealed class ShaderControllerGeneratorInterface
 		string outputPath = GetOutputPath(shader);
 
 		if (string.IsNullOrEmpty(outputPath))
-		{
-			// LOG Bad Path
-
 			return;
-		}
-
+		
 		GenerateShaderController(shader, outputPath);
-
-		// LOG Shader Generation Success
+		
+		Debug.Log($"[Shader Controller] {Path.GetFileName(outputPath)} created");
 	}
 
 	[MenuItem("Assets/Create/Shader Controller/Create PostProcess Controller", true)]
@@ -63,15 +59,11 @@ public sealed class ShaderControllerGeneratorInterface
 		string outputPath = GetOutputPath(shader);
 		
 		if (string.IsNullOrEmpty(outputPath))
-		{
-			// LOG Bad Path
-
 			return;
-		}
 
 		GeneratePostProcessController(shader, outputPath);
 
-		// LOG PostProcess Generation Success
+		Debug.Log($"[Shader Controller] {Path.GetFileName(outputPath)} created");
 	}
 
 	private static string GetOutputPath(Shader shader)
@@ -84,13 +76,13 @@ public sealed class ShaderControllerGeneratorInterface
 
 	public static void GenerateShaderController(Shader shader, string outputPath)
 	{
-		string shaderName = shader.name.Split('/').Last();
+		//string shaderName = shader.name.Split('/').Last();
 
 		ShaderControllerGenerator generator = new ShaderControllerGenerator();
 
 		generator.Session = new Dictionary<string, object>();
 
-		generator.Session["ShaderName"] = shaderName;
+		generator.Session["ControllerClassName"] = Path.GetFileNameWithoutExtension(outputPath);
 		generator.Session["ShaderPathInternal"] = shader.name;
 
 		generator.Session["Properties"] = GetShaderPropertyInfos(shader);
@@ -106,13 +98,13 @@ public sealed class ShaderControllerGeneratorInterface
 
 	public static void GeneratePostProcessController(Shader shader, string outputPath)
 	{
-		string shaderName = shader.name.Split('/').Last();
+		//string shaderName = shader.name.Split('/').Last();
 
 		PostProcessControllerGenerator generator = new PostProcessControllerGenerator();
 
 		generator.Session = new Dictionary<string, object>();
 
-		generator.Session["ShaderName"] = shaderName;
+		generator.Session["ControllerClassName"] = Path.GetFileNameWithoutExtension(outputPath);
 		generator.Session["ShaderPathInternal"] = shader.name;
 
 		generator.Session["Properties"] = GetShaderPropertyInfos(shader);

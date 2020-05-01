@@ -1,11 +1,11 @@
 ﻿<#@ template language="C#" linePragmas="false" #>
-<#@ parameter name="ShaderName" type="System.String" #>
+<#@ parameter name="ControllerClassName" type="System.String" #>
 <#@ parameter name="ShaderPathInternal" type="System.String" #>
 <#@ parameter name="Properties" type="PropertyInfo[]" #>
 // Auto Generated code from ShaderControllerGenerator
 using UnityEngine;
 
-public class <#= ShaderName #>Controller : BaseShaderController
+public class <#= ControllerClassName #> : BaseShaderController
 {
 <#
 	for (int i = 0; i < Properties.Length; i++)

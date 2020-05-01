@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using System.IO;
 
 [CustomEditor(typeof(BaseShaderController), true)]
 [CanEditMultipleObjects]
@@ -8,6 +9,7 @@ public class BaseShaderControllerEditor : Editor
 	SerializedProperty shaderProperty;
 	SerializedProperty materialProperty;
 	SerializedProperty useMaterialCopyProperty;
+	SerializedProperty overrideMaterialProperty;
 
 	BaseShaderController shaderController;
 	Shader shader;
@@ -18,6 +20,7 @@ public class BaseShaderControllerEditor : Editor
 		shaderProperty = serializedObject.FindProperty("shader");
 		materialProperty = serializedObject.FindProperty("material");
 		useMaterialCopyProperty = serializedObject.FindProperty("useMaterialCopy");
+		overrideMaterialProperty = serializedObject.FindProperty("overrideMaterial");
 
 		shader = shaderProperty.objectReferenceValue as Shader;
 		material = materialProperty.objectReferenceValue as Material;
@@ -34,10 +37,10 @@ public class BaseShaderControllerEditor : Editor
 		if (GUILayout.Button("Update Controller"))
 		{
 			string scriptPath = UnityEditor.AssetDatabase.GetAssetPath(UnityEditor.MonoScript.FromMonoBehaviour(shaderController));
-
+			
 			ShaderControllerGeneratorInterface.GenerateShaderController(shader, scriptPath);
 
-			// LOG: Update Shader Ctrl
+			Debug.Log($"[Shader Controller] {Path.GetFileName(scriptPath)} updated");
 		}
 
 		EditorGUILayout.Space();
@@ -46,19 +49,41 @@ public class BaseShaderControllerEditor : Editor
 		EditorGUILayout.PropertyField(shaderProperty);
 		GUI.enabled = true;
 
-		EditorGUI.BeginChangeCheck();
-
-		EditorGUILayout.PropertyField(materialProperty);
-
-		bool materialHasChanged = EditorGUI.EndChangeCheck();
+		EditorGUILayout.Space();
 
 		EditorGUI.BeginChangeCheck();
 
+		EditorGUILayout.PropertyField(overrideMaterialProperty);
 
-		if ((material.hideFlags & HideFlags.DontSave) != HideFlags.DontSave)
-			EditorGUILayout.PropertyField(useMaterialCopyProperty);
+		bool overrideMaterialChanged = EditorGUI.EndChangeCheck();
+		bool materialHasChanged = false;
+		bool useMaterialCopyaterialHasChanged = false;
 
-		bool useMaterialCopyaterialHasChanged = EditorGUI.EndChangeCheck();
+
+		if (overrideMaterialProperty.boolValue)
+		{
+			overrideMaterialChanged = false;
+
+			EditorGUILayout.Space();
+
+			EditorGUI.BeginChangeCheck();
+
+			EditorGUILayout.PropertyField(materialProperty);
+
+			materialHasChanged = EditorGUI.EndChangeCheck();
+
+			EditorGUI.BeginChangeCheck();
+
+			if ((material.hideFlags & HideFlags.DontSave) != HideFlags.DontSave)
+				EditorGUILayout.PropertyField(useMaterialCopyProperty);
+
+			useMaterialCopyaterialHasChanged = EditorGUI.EndChangeCheck();
+		}
+		else
+		{
+			if (overrideMaterialChanged)
+				materialProperty.objectReferenceValue = null;
+		}
 
 		EditorGUILayout.Space();
 
@@ -67,7 +92,7 @@ public class BaseShaderControllerEditor : Editor
 		//DrawDefaultInspector();
 		base.OnInspectorGUI();
 
-		if (materialHasChanged || useMaterialCopyaterialHasChanged)
+		if (materialHasChanged || useMaterialCopyaterialHasChanged || overrideMaterialChanged)
 		{
 			shaderController.SetupMaterial();
 		}
