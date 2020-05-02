@@ -23,6 +23,21 @@ public sealed class ShaderControllerGeneratorInterface
 	// 81 as priority for placing "Shader Controller" menu between "C# Script" and "Shader"
 	const int menuPriority = 81;
 
+	//[MenuItem("Assets/Create/Shader Controller/Extend Shader Controller", true)]
+	//public static bool ValidateCreatePartialShaderController()
+	//{
+	//	MonoScript script = Selection.activeObject as MonoScript;
+
+	//	return script.GetClass().BaseType == typeof(BaseShaderController);
+	//}
+
+	//[MenuItem("Assets/Create/Shader Controller/Extend Shader Controller")]
+	//public static void CreatePartialShaderController()
+	//{
+	//	// Generate Partial Shader Controller
+	//}
+
+
 	[MenuItem("Assets/Create/Shader Controller/Create Shader Controller", true)]
 	public static bool ValidateCreateShaderControllerFromShaderAsset()
 	{

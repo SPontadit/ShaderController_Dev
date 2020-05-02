@@ -22,8 +22,8 @@ namespace Assets.ShaderController.Editor.Templates
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("// Auto Generated code from ShaderControllerGenerator\r\nusing UnityEngine;\r\n\r\npubl" +
-                    "ic class ");
+            this.Write("// Auto Generated code from ShaderControllerGenerator\r\nusing UnityEngine;\r\n\r\n[Req" +
+                    "uireComponent(typeof(Renderer))]\r\npublic class ");
             this.Write(this.ToStringHelper.ToStringWithCulture(ControllerClassName));
             this.Write(" : BaseShaderController\r\n{\r\n");
 
@@ -134,7 +134,9 @@ namespace Assets.ShaderController.Editor.Templates
 
             this.Write("\r\n\r\n\tprotected override void Start()\r\n\t{\r\n\t\tshader = Shader.Find(\"");
             this.Write(this.ToStringHelper.ToStringWithCulture(ShaderPathInternal));
-            this.Write("\");\r\n\r\n\t\tbase.Start();\r\n\t}\r\n\r\n\tpublic override void SetupInspectorValue()\r\n\t{\r\n");
+            this.Write("\");\r\n\r\n\t\tbase.Start();\r\n\t}\r\n\r\n\tpublic override void SetupMaterial()\r\n\t{\r\n\t\tbase.S" +
+                    "etupMaterial();\r\n\r\n\t\tGetComponent<Renderer>().material = material;\r\n\t}\r\n\r\n\tpubli" +
+                    "c override void SetupInspectorValue()\r\n\t{\r\n");
 
 	for (int i = 0; i < Properties.Length; i++)
 	{

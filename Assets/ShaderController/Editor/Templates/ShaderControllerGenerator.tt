@@ -5,6 +5,7 @@
 // Auto Generated code from ShaderControllerGenerator
 using UnityEngine;
 
+[RequireComponent(typeof(Renderer))]
 public class <#= ControllerClassName #> : BaseShaderController
 {
 <#
@@ -80,6 +81,13 @@ public class <#= ControllerClassName #> : BaseShaderController
 		shader = Shader.Find("<#= ShaderPathInternal #>");
 
 		base.Start();
+	}
+
+	public override void SetupMaterial()
+	{
+		base.SetupMaterial();
+
+		GetComponent<Renderer>().material = material;
 	}
 
 	public override void SetupInspectorValue()

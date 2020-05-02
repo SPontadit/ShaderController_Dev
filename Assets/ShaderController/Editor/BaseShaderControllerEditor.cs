@@ -8,24 +8,20 @@ public class BaseShaderControllerEditor : Editor
 {
 	SerializedProperty shaderProperty;
 	SerializedProperty materialProperty;
-	SerializedProperty useMaterialCopyProperty;
-	SerializedProperty overrideMaterialProperty;
+	SerializedProperty isPostProcessControllerProperty;
 
 	BaseShaderController shaderController;
-	Shader shader;
-	Material material;
-
+	bool useMaterialCopy;
+	bool overrideMaterial;
+	
 	private void OnEnable()
 	{
 		shaderProperty = serializedObject.FindProperty("shader");
 		materialProperty = serializedObject.FindProperty("material");
-		useMaterialCopyProperty = serializedObject.FindProperty("useMaterialCopy");
-		overrideMaterialProperty = serializedObject.FindProperty("overrideMaterial");
-
-		shader = shaderProperty.objectReferenceValue as Shader;
-		material = materialProperty.objectReferenceValue as Material;
+		isPostProcessControllerProperty = serializedObject.FindProperty("isPostProcessController");
 
 		shaderController = target as BaseShaderController;
+		shaderController.SetupInspectorValue();
 	}
 
 	public override void OnInspectorGUI()
@@ -37,8 +33,13 @@ public class BaseShaderControllerEditor : Editor
 		if (GUILayout.Button("Update Controller"))
 		{
 			string scriptPath = UnityEditor.AssetDatabase.GetAssetPath(UnityEditor.MonoScript.FromMonoBehaviour(shaderController));
-			
-			ShaderControllerGeneratorInterface.GenerateShaderController(shader, scriptPath);
+
+			Shader shader = shaderProperty.objectReferenceValue as Shader;
+
+			if (isPostProcessControllerProperty.boolValue)
+				ShaderControllerGeneratorInterface.GeneratePostProcessController(shader, scriptPath);
+			else
+				ShaderControllerGeneratorInterface.GenerateShaderController(shader, scriptPath);
 
 			Debug.Log($"[Shader Controller] {Path.GetFileName(scriptPath)} updated");
 		}
@@ -53,16 +54,16 @@ public class BaseShaderControllerEditor : Editor
 
 		EditorGUI.BeginChangeCheck();
 
-		EditorGUILayout.PropertyField(overrideMaterialProperty);
+		overrideMaterial = EditorGUILayout.Toggle(new GUIContent("Override Material", ""), overrideMaterial);
 
-		bool overrideMaterialChanged = EditorGUI.EndChangeCheck();
+		bool overrideMaterialHasChanged = EditorGUI.EndChangeCheck();
 		bool materialHasChanged = false;
-		bool useMaterialCopyaterialHasChanged = false;
+		bool useMaterialCopyHasChanged = false;
 
 
-		if (overrideMaterialProperty.boolValue)
+		if (overrideMaterial)
 		{
-			overrideMaterialChanged = false;
+			overrideMaterialHasChanged = false;
 
 			EditorGUILayout.Space();
 
@@ -74,27 +75,66 @@ public class BaseShaderControllerEditor : Editor
 
 			EditorGUI.BeginChangeCheck();
 
-			if ((material.hideFlags & HideFlags.DontSave) != HideFlags.DontSave)
-				EditorGUILayout.PropertyField(useMaterialCopyProperty);
+			Material material = materialProperty.objectReferenceValue as Material;
 
-			useMaterialCopyaterialHasChanged = EditorGUI.EndChangeCheck();
-		}
-		else
-		{
-			if (overrideMaterialChanged)
-				materialProperty.objectReferenceValue = null;
+			if (material && ((material.hideFlags & HideFlags.DontSave) != HideFlags.DontSave))
+				useMaterialCopy = EditorGUILayout.Toggle(new GUIContent("Use Material Copy", "When enabled, create a new material based on the one in the material field."), useMaterialCopy);
+
+			useMaterialCopyHasChanged = EditorGUI.EndChangeCheck();
 		}
 
 		EditorGUILayout.Space();
 
 		serializedObject.ApplyModifiedProperties();
 
-		//DrawDefaultInspector();
 		base.OnInspectorGUI();
 
-		if (materialHasChanged || useMaterialCopyaterialHasChanged || overrideMaterialChanged)
+		if (materialHasChanged)
 		{
 			shaderController.SetupMaterial();
 		}
+		else if (useMaterialCopyHasChanged)
+		{
+			SetupMaterialCopy();
+		}
+		else if (overrideMaterialHasChanged)
+		{
+			ResetMaterial();
+		}
+
+		serializedObject.ApplyModifiedProperties();
+	}
+
+	public void SetupMaterialCopy()
+	{
+		Material material = materialProperty.objectReferenceValue as Material;
+
+		string originalName = material.name;
+		material = new Material(material);
+		material.name = originalName + " - Copy";
+		material.hideFlags = HideFlags.DontSave;
+
+		materialProperty.objectReferenceValue = material;
+
+		useMaterialCopy = false;
+
+		if (isPostProcessControllerProperty.boolValue == false)
+			shaderController.GetComponent<Renderer>().material = material;
+	}
+
+	public void ResetMaterial()
+	{
+		Material material = materialProperty.objectReferenceValue as Material;
+		Shader shader = shaderProperty.objectReferenceValue as Shader;
+
+		material = new Material(material);
+		string originalName = shader.name;
+		material.name = originalName + " - Tmp";
+		material.hideFlags = HideFlags.DontSave;
+
+		materialProperty.objectReferenceValue = material;
+
+		if (isPostProcessControllerProperty.boolValue == false)
+			shaderController.GetComponent<Renderer>().material = material;
 	}
 }

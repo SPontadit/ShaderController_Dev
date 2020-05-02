@@ -23,9 +23,9 @@ namespace Assets.ShaderController.Editor.Templates
         public virtual string TransformText()
         {
             this.Write("// Auto Generated code from ShaderControllerGenerator\r\nusing UnityEngine;\r\n\r\n[Req" +
-                    "uireComponent(typeof(Camera))]\r\n[ExecuteInEditMode]\r\npublic class ");
+                    "uireComponent(typeof(Camera))]\r\npublic class ");
             this.Write(this.ToStringHelper.ToStringWithCulture(ControllerClassName));
-            this.Write(" : BasePostProcessController\r\n{\r\n");
+            this.Write(" : BaseShaderController\r\n{\r\n");
 
 	for (int i = 0; i < Properties.Length; i++)
 	{
@@ -132,10 +132,11 @@ namespace Assets.ShaderController.Editor.Templates
 		}
 	}
 
-            this.Write("\r\n\tprivate void Start()\r\n\t{\r\n\t\tshader = Shader.Find(\"");
+            this.Write("\r\n\tprotected override void Start()\r\n\t{\r\n\t\tisPostProcessController = true;\r\n\t\tshad" +
+                    "er = Shader.Find(\"");
             this.Write(this.ToStringHelper.ToStringWithCulture(ShaderPathInternal));
-            this.Write("\");\r\n\r\n\t\tmaterial = new Material(shader);\r\n\t\tmaterial.hideFlags = HideFlags.DontS" +
-                    "ave;\r\n\t}\r\n\r\n\tpublic void SetupInspectorValue()\r\n\t{\r\n");
+            this.Write("\");\r\n\r\n\t\tbase.Start();\r\n\t}\r\n\r\n\tpublic override void SetupMaterial()\r\n\t{\r\n\t\tbase.S" +
+                    "etupMaterial();\r\n\t}\r\n\r\n\tpublic override void SetupInspectorValue()\r\n\t{\r\n");
 
 	for (int i = 0; i < Properties.Length; i++)
 	{
