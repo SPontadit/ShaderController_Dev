@@ -3,8 +3,6 @@
 [ExecuteInEditMode]
 public abstract class BaseShaderController : MonoBehaviour
 {
-	[HideInInspector]
-	[SerializeField] protected bool isPostProcessController = false;
 
 	[HideInInspector]
 	[SerializeField] protected Shader shader;
@@ -12,6 +10,13 @@ public abstract class BaseShaderController : MonoBehaviour
 	[HideInInspector]
 	[SerializeField] protected Material material;
 
+#if UNITY_EDITOR
+	[HideInInspector]
+	[SerializeField] protected bool allowMaterialOverride = false;
+
+	[HideInInspector]
+	[SerializeField] protected bool isPostProcessController = false;
+#endif
 
 	protected virtual void Start()
 	{
@@ -29,7 +34,7 @@ public abstract class BaseShaderController : MonoBehaviour
 		{
 			material = new Material(shader);
 			string originalName = shader.name;
-			material.name = originalName + " - Tmp";
+			material.name = originalName + " - Virtual";
 			material.hideFlags = HideFlags.DontSave;
 		}
 
@@ -37,10 +42,4 @@ public abstract class BaseShaderController : MonoBehaviour
 	}
 
 	public abstract void SetupInspectorValue();
-
-
-	protected void OnValidate()
-	{
-		//Start();
-	}
 }
