@@ -21,6 +21,8 @@ public class BaseShaderControllerEditor : Editor
 		isPostProcessControllerProperty = serializedObject.FindProperty("isPostProcessController");
 		allowMaterialOverrideProperty = serializedObject.FindProperty("allowMaterialOverride");
 
+		
+
 		shaderController = target as BaseShaderController;
 		shaderController.SetupInspectorValue();
 	}

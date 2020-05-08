@@ -32,7 +32,7 @@ namespace Assets.ShaderController.Editor.Templates
             this.Write(@".
 // The tool does not check if there is already a controller for a shader.
 // 
-// It is recommended to not modify this script. Since all your changes will be erased if you update the controller.
+// It is recommended to not modify this generated script since all the changes made will be overwritten if your update it.
 //
 
 using UnityEngine;

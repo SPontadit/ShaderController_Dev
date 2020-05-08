@@ -175,6 +175,10 @@ public sealed class ShaderControllerGeneratorInterface
 			PropertyInfo info = new PropertyInfo();
 			info.name = propertyName;
 			info.description = propertyDescription;
+
+			if (string.IsNullOrWhiteSpace(propertyDescription))
+				propertyDescription = propertyName;
+
 			string descriptionAsName = Regex.Replace(propertyDescription, @"(^\w)|(\s\w)", m => m.Value.ToUpper());
 			descriptionAsName = descriptionAsName.Replace(" ", string.Empty);
 			info.descriptionAsName = System.Char.ToLower(descriptionAsName[0]) + descriptionAsName.Substring(1);
