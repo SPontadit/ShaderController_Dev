@@ -314,4 +314,4 @@ MonoBehaviour:
   allowMaterialOverride: 1
   isPostProcessController: 1
   negativeEffectPower: 0
-  negativeColor: {r: 1, g: 0.15566039, b: 0.15566039, a: 1}
+  negativeColor: {r: 1, g: 0, b: 0, a: 1}
